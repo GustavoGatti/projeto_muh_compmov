@@ -80,7 +80,7 @@ class UserModel extends Model{
     await Firestore.instance.collection('users').document(firebaseUser.uid).setData(userData);
   }
 
-   Future<String> _updateImage(File image) async {
+  Future<String> _updateImage(File image) async {
     if (image != null) {
       StorageUploadTask task = FirebaseStorage.instance.ref().child(
           DateTime
@@ -95,16 +95,29 @@ class UserModel extends Model{
     return "";
   }
 
+  Future<Null> createProdutoData(Map<String,dynamic> farmData, String idFarm) async {
+   // String url = await _updateImage(image);
+    //farmData.update('image', (value) => value = url);
+    await Firestore.instance.collection('users').document(firebaseUser.uid).collection("farms").document(idFarm).collection("products").document().setData(farmData);
+  }
+
   Future<Null> createFarmData(Map<String,dynamic> farmData, File image) async {
     String url = await _updateImage(image);
     farmData.update('image', (value) => value = url);
     await Firestore.instance.collection('users').document(firebaseUser.uid).collection("farms").document().setData(farmData);
   }
 
+  Future<String> pegaItensdeumaFazenda() async{ // retorna os itens da fazenda da tela do gu
+    DocumentSnapshot fazenda = await Firestore.instance.collection('users').document(firebaseUser.uid).collection('farms').document().get();
+    String nome = fazenda.data['name'];
+    return nome;
+  }
+
   Future<Null> createItemData(Map<String,dynamic> itemData, File image, String farmId) async {
     String url = await _updateImage(image);
     itemData.update('image', (value) => value = url);
-    await Firestore.instance.collection('users').document(firebaseUser.uid).collection('farms').document(farmId).collection('items').document().setData(itemData);
+    //await Firestore.instance.collection('users').document(firebaseUser.uid).collection('farms').document(farmId).collection('items').document().setData(itemData)
+    await Firestore.instance.collection('users').document(firebaseUser.uid).collection("farms").document(farmId).collection('items').document().setData(itemData);
   }
 
   bool isLoggedIn(){
