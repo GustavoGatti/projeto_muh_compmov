@@ -113,6 +113,16 @@ class UserModel extends Model{
     return nome;
   }
 
+  Future<Null> criarTipo(String idFarm, Map<String,dynamic> idtag,  File image) async {
+    await Firestore.instance.collection('users').document(firebaseUser.uid).collection("farms").document(idFarm).collection("products").document().setData(idtag);
+  }
+
+  Future<String> pegaNomedeumaFazenda( String idFarm) async{ // retorna os itens da fazenda da tela do gu
+    DocumentSnapshot fazenda = await Firestore.instance.collection('users').document(firebaseUser.uid).collection('farms').document(idFarm).get();
+    String nome = fazenda.data['name'];
+    return nome;
+  }
+
   Future<Null> createItemData(Map<String,dynamic> itemData, File image, String farmId) async {
     String url = await _updateImage(image);
     itemData.update('image', (value) => value = url);

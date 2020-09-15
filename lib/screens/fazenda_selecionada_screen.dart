@@ -5,7 +5,22 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:projeto_muh_compmov/models/user_model.dart';
+import 'package:projeto_muh_compmov/screens/item_registration_screen.dart';
 import 'package:scoped_model/scoped_model.dart';
+
+File _image;
+
+pickImageFromGallery(ImageSource source) async {
+  final ImagePicker picker = ImagePicker();
+  final PickedFile image = await picker.getImage(source: source);
+
+  setState(() {
+    _image = File(image.path);
+  });
+}
+
+void setState(Null Function() param0) {
+}
 
 
 class FazendaSelecionadaScreen extends StatefulWidget {
@@ -58,8 +73,7 @@ class _FazendaSelecionadaScreenState extends State<FazendaSelecionadaScreen> {
         ),
         body:ScopedModelDescendant<UserModel>(
             builder: (context, child, model)  {
-              String aux = this.id;
-              print("\n\n\n\n\nselecionada" + aux + "\n\n\n\n\n\n");
+              Future<String> nome =  model.pegaNomedeumaFazenda(id);
               return Container(
                   padding: EdgeInsets.all(30),
                   child: Center(
@@ -70,7 +84,7 @@ class _FazendaSelecionadaScreenState extends State<FazendaSelecionadaScreen> {
                             Padding(
                               padding: EdgeInsets.only(bottom: 20),
                               child: new Center(
-                                child: Text(aux),
+                                child: Text(id),
                               ),
                             ),
                             Padding(
@@ -80,6 +94,7 @@ class _FazendaSelecionadaScreenState extends State<FazendaSelecionadaScreen> {
                                 height: 70.0,
                                 color: Colors.white,
                                 child: TextField(
+                                  controller: _nomedogrupo,
                                   autofocus: false,
                                   keyboardType: TextInputType.text,
                                   style: TextStyle(fontSize: 25, height:1),
@@ -111,9 +126,9 @@ class _FazendaSelecionadaScreenState extends State<FazendaSelecionadaScreen> {
                                   ),
                                   hint: Text('Selecione um tipo...'), // Not necessary for Option 1
                                   value: _selectedLocation,
-                                  onChanged: (newValue) {
+                                  onChanged: (valor) {
                                     setState(() {
-                                      _selectedLocation = newValue;
+                                      _selectedLocation = valor;
                                     });
                                   },
                                   items: _locations.map((location) {
@@ -135,7 +150,7 @@ class _FazendaSelecionadaScreenState extends State<FazendaSelecionadaScreen> {
                                 margin: EdgeInsets.only(left: 50, right: 50),
                                 color: Colors.white,
                                 child: TextField(
-
+                                  controller: _qtdProdutos,
                                   autofocus: false,
                                   keyboardType: TextInputType.number,
                                   style: TextStyle(fontSize: 25, height:1),
@@ -187,6 +202,8 @@ class _FazendaSelecionadaScreenState extends State<FazendaSelecionadaScreen> {
                                       ),
                                       onPressed: () {
                                         // adiciona uma nova imagem...
+                                        pickImageFromGallery(
+                                            ImageSource.gallery);
                                       },
                                     ),
                                     Spacer(),
@@ -215,7 +232,8 @@ class _FazendaSelecionadaScreenState extends State<FazendaSelecionadaScreen> {
                                         ],
                                       ),
                                       onPressed: () {
-                                        // adiciona um novo item...
+                                        Navigator.push(context, MaterialPageRoute(builder:  (context) => ItemRegister(this.id)),
+                                        );
                                       },
                                     ),
                                   ],
@@ -281,11 +299,11 @@ class _FazendaSelecionadaScreenState extends State<FazendaSelecionadaScreen> {
                                 onPressed: () {
                                   Map<String,dynamic> ProdutoData = {
                                     'name': _nomedogrupo.text,
-                                    'tipo': _tipo.text,
+                                    'tipo': _selectedLocation,
                                     'quantidade produtos': _qtdProdutos.text,
                                     'image': ""
                                   };
-                                  model.createProdutoData(ProdutoData, aux);
+                                  model.criarTipo(id,ProdutoData, _image);
                                 },
                               ),
                             )

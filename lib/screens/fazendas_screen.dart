@@ -19,7 +19,7 @@ class _FazendasScreenState extends State<FazendasScreen> {
         backgroundColor: Colors.white,
         iconTheme: new IconThemeData(color: Colors.black),
         //  leading: Image.asset("imagens/cow.png"),
-        title: Text("Alo Muh"),//Image.asset("imagens/cow.png", alignment: Alignment.center, scale: 1.5,),
+        title: Image.asset("assets/vakinha.png", alignment: Alignment.center, scale: 3.5,),
         actions: [
           RaisedButton(
             // color: Colors.white,
@@ -54,6 +54,7 @@ class _FazendasScreenState extends State<FazendasScreen> {
                 ),
                 value: _selecionada,
                 onChanged: (newValue){
+                  _selecionada = newValue;
                   setState(() {
                     _selecionada = newValue;
                   });
