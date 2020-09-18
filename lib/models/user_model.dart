@@ -4,12 +4,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:projeto_muh_compmov/Firabase/Fazenda.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class UserModel extends Model{
 
   FirebaseAuth _auth = FirebaseAuth.instance;
-
+  List nome = [];
+  String idFazenda;
   FirebaseUser firebaseUser;
   Map<String,dynamic> userData = Map();
 
@@ -117,10 +119,22 @@ class UserModel extends Model{
     await Firestore.instance.collection('users').document(firebaseUser.uid).collection("farms").document(idFarm).collection("products").document().setData(idtag);
   }
 
-  Future<String> pegaNomedeumaFazenda( String idFarm) async{ // retorna os itens da fazenda da tela do gu
-    DocumentSnapshot fazenda = await Firestore.instance.collection('users').document(firebaseUser.uid).collection('farms').document(idFarm).get();
-    String nome = fazenda.data['name'];
-    return nome;
+  Future<Null> criaProduto(Map<String, dynamic> produtos, File image, String id_fazenda) async {
+    String url = await _updateImage(image);
+    produtos.update('image', (value) => value = url);
+    await Firestore.instance.collection('users').document(firebaseUser.uid).collection("farms").document(id_fazenda).collection('products').document().setData(produtos);
+  }
+
+  Future<List> pegaNomedeumaFazenda() async{ // retorna os itens da fazenda da tela do gu
+    QuerySnapshot query = await Firestore.instance.collection('users').document(firebaseUser.uid).collection('farms').getDocuments();
+    for(DocumentSnapshot item in query.documents) {
+      var dados = item.data;
+      print("nome12121212121: " + dados["name"]);
+      String aux = dados["name"];
+      nome.add(aux);
+      print("\n\n\n\n\n dados: " + item.documentID);
+      idFazenda = item.documentID;
+    }
   }
 
   Future<Null> createItemData(Map<String,dynamic> itemData, File image, String farmId) async {
