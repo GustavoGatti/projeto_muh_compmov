@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:projeto_muh_compmov/Drawer/Drawer.dart';
 import 'package:projeto_muh_compmov/models/user_model.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -65,6 +66,9 @@ class _CadastroFzdState extends State<CadastroFzd> {
 
   @override
   Widget build(BuildContext context) {
+
+    List nome;
+
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
@@ -106,6 +110,7 @@ class _CadastroFzdState extends State<CadastroFzd> {
         ),
         body: ScopedModelDescendant<UserModel>(
           builder: (context, child, model) {
+            nome = model.nome;
             if (model.isLoading) {
               return Center(
                 child: CircularProgressIndicator(),
@@ -357,6 +362,8 @@ class _CadastroFzdState extends State<CadastroFzd> {
               );
             }
           },
-        ));
+        ),
+        drawer: CustomDrawer(nome),
+    );
   }
 }
