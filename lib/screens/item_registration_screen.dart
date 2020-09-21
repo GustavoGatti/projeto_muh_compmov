@@ -15,9 +15,11 @@ import 'package:scoped_model/scoped_model.dart';
 
 class ItemRegister extends StatelessWidget {
   String _farmId;
+  String nome;
 
-  ItemRegister(String farmId) {
+  ItemRegister(String farmId, String nome) {
     this._farmId = farmId;
+    this.nome = nome;
   }
 
   @override
@@ -57,7 +59,7 @@ class ItemRegister extends StatelessWidget {
           ),
         ],
       ),
-      body: CustomForm(this._farmId),
+      body: CustomForm(this._farmId, this.nome),
     );
   }
 }
@@ -65,9 +67,10 @@ class ItemRegister extends StatelessWidget {
 // -- FORM
 class CustomForm extends StatefulWidget {
   String _farmId;
-
-  CustomForm(String farmId) {
+  String nome;
+  CustomForm(String farmId, String nome) {
     this._farmId = farmId;
+    this.nome = nome;
   }
 
   @override

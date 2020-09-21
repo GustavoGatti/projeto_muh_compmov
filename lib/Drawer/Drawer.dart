@@ -12,19 +12,36 @@ import 'package:scoped_model/scoped_model.dart';
 import 'CustomHeader.dart';
 import 'icon_section.dart';
 
-class CustomDrawer extends StatelessWidget {
+
+class CustomDrawer extends StatefulWidget {
+
+  final List nome;
+
+  CustomDrawer(this.nome);
+
+  @override
+  _CustomDrawerState createState() => _CustomDrawerState(this.nome);
+}
+
+class _CustomDrawerState extends State<CustomDrawer> {
+
+  final List nome;
+  _CustomDrawerState(this.nome);
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
       child: ListView(
-          children: <Widget>[
-            CustomHeader(),
-            IconSection(),
-            Divider(color: Colors.grey[500],),
-            IconSectionDown(),
-          ],
-    ),
+        children: <Widget>[
+          CustomHeader(),
+          IconSection(this.nome),
+          Divider(color: Colors.grey[500],),
+          IconSectionDown(),
+        ],
+      ),
     );
   }
 }
+
+
 

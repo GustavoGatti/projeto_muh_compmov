@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:projeto_muh_compmov/models/user_model.dart';
+import 'package:projeto_muh_compmov/screens/item_registration_screen.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 void main() {
@@ -15,6 +16,7 @@ class FazendaSelecionadaScreen  extends StatefulWidget {
 
   FazendaSelecionadaScreen(this._nomefazenda, this._idFazenda);
 
+
   @override
   _FazendaSelecionadaScreenState createState() => _FazendaSelecionadaScreenState(_nomefazenda, _idFazenda);
 
@@ -24,6 +26,43 @@ class _FazendaSelecionadaScreenState extends State<FazendaSelecionadaScreen> {
   final String _nomefazenda;
   final String _idFazenda;
 
+  popup(BuildContext context) {
+    return showDialog(context: context, builder: (context) {
+      return AlertDialog(
+        title: Text("Novo tipo adicionado com sucesso!"),
+        actions: <Widget> [
+          MaterialButton(
+            elevation: 5.0,
+            child: Text('ok'),
+            onPressed: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => ItemRegister(_idFazenda, _nomefazenda))
+              );
+            },
+          )
+        ],
+      );
+    });
+  }
+
+  popupDeuErrado(BuildContext context) {
+    return showDialog(context: context, builder: (context) {
+      return AlertDialog(
+        title: Text("Novo tipo não foi adicionado! Tente novamente..."),
+        actions: <Widget> [
+          MaterialButton(
+            elevation: 5.0,
+            child: Text('ok'),
+            onPressed: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => FazendaSelecionadaScreen(_nomefazenda, _idFazenda))
+              );
+            },
+          )
+        ],
+      );
+    });
+  }
   _FazendaSelecionadaScreenState(this._nomefazenda, this._idFazenda);
 
   List<String> _productions = ['Arboricultura', 'Cacauicultura', 'Citricultura', 'Flor de Corte', 'Floricultura', 'Forragicultura', 'Fruticultura', 'Haveicultura',
@@ -314,41 +353,37 @@ class _FazendaSelecionadaScreenState extends State<FazendaSelecionadaScreen> {
                               ),
                             ),
 
-                            Column(
+                            Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-//                                Text(
-//                                  "Descrição:",
-//                                  style: TextStyle(
-//                                    fontSize: 25,
-//                                    fontStyle: FontStyle.normal,
-//                                    fontWeight: FontWeight.bold,
-//                                  ),
-//                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(top: 5, bottom: 5),
-                                  child: Container(
-//                                    child: TextField(
-//                                      controller: _descriptionController,
-//                                      style: TextStyle(
-//                                        fontSize: 17,
-//                                      ),
-//                                      keyboardType: TextInputType.multiline,
-//                                      minLines: 3,
-//                                      maxLines: 3,
-//                                      decoration: InputDecoration(
-//                                          filled: true,
-//                                          hintText:
-//                                          "Faça uma descrição da fazenda",
-//                                          border: OutlineInputBorder(
-//                                              borderRadius:
-//                                              BorderRadius.circular(15))),
-//                                    ),
+                                RaisedButton.icon(
+                                  onPressed: () {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(builder: (context) => ItemRegister(_idFazenda, _nomefazenda))
+                                    );
+                                  },
+                                  icon: Icon(
+                                    Icons.add_circle_outline,
+                                    color: Colors.black,
+
+                                  ),
+                                  label: Text(
+                                    "Adicionar item...",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  elevation: 0,
+                                  // color: Colors.white,
+                                  color: Colors.white70,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(
+                                        Radius.elliptical(300,300)),
                                   ),
                                 ),
                               ],
                             ),
-                          ],
+                        ],
                         ),
                       ),
                       Align(
@@ -359,6 +394,7 @@ class _FazendaSelecionadaScreenState extends State<FazendaSelecionadaScreen> {
                               color: Colors.black,
                               onPressed: () {
                                 _validarCampos();
+                                popupDeuErrado(context);
                                 if (_mensagemErro != "")
                                   _scaffoldKey.currentState.showSnackBar(
                                     SnackBar(
@@ -372,6 +408,7 @@ class _FazendaSelecionadaScreenState extends State<FazendaSelecionadaScreen> {
                                     ),
                                   );
                                 else {
+                                  popup(context);
                                   Map<String,dynamic> produtos = {
                                     'name': _nomedogrupo.text,
                                     'qtd_produtos': _qtdProdutos.text,
@@ -380,6 +417,7 @@ class _FazendaSelecionadaScreenState extends State<FazendaSelecionadaScreen> {
                                   };
                                   model.pegaNomedeumaFazenda();
                                   model.criaProduto(produtos, _image, this._idFazenda);
+
                                 }
                               },
                               child: Text(

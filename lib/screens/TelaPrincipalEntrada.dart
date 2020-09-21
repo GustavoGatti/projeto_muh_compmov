@@ -1,12 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_muh_compmov/Drawer/Drawer.dart';
+import 'package:projeto_muh_compmov/models/user_model.dart';
+import 'package:projeto_muh_compmov/screens/fazendas_screen.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class TelaPrincipal extends StatefulWidget {
+
+  final List name;
+
+  TelaPrincipal(this.name);
+
+
   @override
-  _TelaPrincipalState createState() => _TelaPrincipalState();
+  _TelaPrincipalState createState() => _TelaPrincipalState(this.name);
+
 }
 
 class _TelaPrincipalState extends State<TelaPrincipal> {
+
+  final List name;
+
+  _TelaPrincipalState(this.name);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,13 +39,14 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
           Icon(Icons.message),
           color: Colors.white,
           onPressed: () {
-            // vai para as mensagens...
+            print("nomezinhos :" + this.name.toString());
           },
         ),
       ],
     ),
-      drawer: CustomDrawer(),
-    );
+
+      drawer: CustomDrawer(this.name),
+      );
   }
 }
 

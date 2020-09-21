@@ -2,11 +2,13 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:projeto_muh_compmov/Drawer/Drawer.dart';
 import 'package:projeto_muh_compmov/models/user_model.dart';
 import 'package:projeto_muh_compmov/screens/fazenda_selecionada_screen.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 void main() {}
+
 
 class FazendasScreen extends StatefulWidget {
   @override
@@ -14,6 +16,45 @@ class FazendasScreen extends StatefulWidget {
 }
 
 class _FazendasScreen extends State<FazendasScreen> {
+  popup(BuildContext context, String nome, String id) {
+    return showDialog(context: context, builder: (context) {
+      return AlertDialog(
+        title: Text("Fazenda selecionada: " + nome),
+        actions: <Widget> [
+          MaterialButton(
+            elevation: 5.0,
+            child: Text('ok'),
+            onPressed: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => FazendaSelecionadaScreen(nome, id))
+              );
+            },
+          )
+        ],
+      );
+    });
+  }
+
+  popupDeuErrado(BuildContext context, String nome, String id) {
+    return showDialog(context: context, builder: (context) {
+      return AlertDialog(
+        title: Text("Escolha uma fazenda!"),
+        actions: <Widget> [
+          MaterialButton(
+            elevation: 5.0,
+            child: Text('ok'),
+            onPressed: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => FazendasScreen())
+              );
+            },
+          )
+        ],
+      );
+    });
+  }
+
+
   //para o dropDown
   List<String> _productions = ['Leite', 'hortaliças'];
   String _productionSel;
@@ -21,8 +62,8 @@ class _FazendasScreen extends State<FazendasScreen> {
   final TextEditingController _adressController = TextEditingController();
   final TextEditingController _descriptionController =  TextEditingController();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  String _mensagemErro = "";
-
+  String mensagem = "";
+  List name;
 
   @override
   Widget build(BuildContext context) {
@@ -65,6 +106,7 @@ class _FazendasScreen extends State<FazendasScreen> {
                           hint: Text(
                               'Selecione uma fazenda'), // Not necessary for Option 1
                           value: _productionSel,
+
                           onChanged: (newValue) {
                             setState(() {
                               _productionSel = newValue;
@@ -115,9 +157,12 @@ class _FazendasScreen extends State<FazendasScreen> {
                        child: RaisedButton(
                          color: Colors.black,
                          onPressed: (){
-                           Navigator.of(context).push(
-                               MaterialPageRoute(builder: (context) => FazendaSelecionadaScreen(_productionSel,model.idFazenda))
-                           );
+                           if(_productionSel != null) {
+                             popup(context, _productionSel, model.idFazenda);
+                             this.name = model.nome;
+                           } else {
+                             popupDeuErrado(context, _productionSel, model.idFazenda);
+                           }
                          },
                          child: Text(
                            "Adicionar Novo Produto",
@@ -134,7 +179,8 @@ class _FazendasScreen extends State<FazendasScreen> {
                   ],
               );
           }
-        )
+        ),
+        drawer: CustomDrawer(this.name),
     );
 
   }
